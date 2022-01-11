@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Basket Badger</title>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+th {
+  text-align: left;
+}
+</style>
+</head>
+<body>
+
+  <div>
+    <h2>Basket Badger</h2>
+    <p>Key in your input to filter the table:</p>
+
+    <input type="text" id="myinput" placeholder="Search..." title="Type in something">
+
+    <p>Click on the header of a column to sort the table:</p>
+
+
+    <table>
+      <thead><tr>
+        <th><span id="outside_length" class="w3-button table-column">Outside length<i class="caret"></span></th>
+        <th><span id="outside_width" class="w3-button table-column">Outside width<i class="caret"></span></th>
+        <th><span id="outside_height" class="w3-button table-column">Outside height <i class="caret"></span></th>
+        <th><span id="link" class="w3-button table-column">Amazon link <i class="caret"></span></th>
+      </tr></thead>
+      <tbody id="mytable"></tbody>
+    </table>
+  </div>
+<script>
+
+//make slider to filter the column values
+//add the rest of the columns from spreadsheet
+//sign up for Amazon affiliate program
+//make Amazon links the affiliate links
+//embed Amazon links
+//get ASIN numbers
+//fix the filter & sort bug
+var table = document.getElementById('mytable');
+var input = document.getElementById('myinput');
+var caretUpClassName = 'fa fa-caret-up';
+var caretDownClassName = 'fa fa-caret-down';
+var tableData = [
+  {
+    "outside_length": 10.03,
+    "outside_width": 7.67,
+    "outside_height": 3.94,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/gp/product/B08948JV9C/ref=ask_ql_qh_dp_hza"
+  },
+  {
+    "outside_length": 10.5,
+    "outside_width": 7.3,
+    "outside_height": 5.5,
+    "inside_length_top": 9.5,
+    "inside_width_top": 6.75,
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/CBTONE-Organizer-Bathroom-Cosmetics-Supplies/dp/B087WQJWKB/ref=sr_1_1_sspa?keywords=plastic%2Bbaskets&qid=1641848453&s=storageorganization&sr=1-1-spons&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzQVNVQ05IWjlETFIzJmVuY3J5cHRlZElkPUEwNzA5MDQ5Mk45WElFVkNINExWTiZlbmNyeXB0ZWRBZElkPUEwNjM2MTkwR004NjZQNExJWEVRJndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ&th=1"
+  },
+  {
+    "outside_length": 9.84,
+    "outside_width": 7.87,
+    "outside_height": 3.94,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Plastic-Storage-Basket-X-Large/dp/B0713Y5XJX?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 13.75,
+    "outside_width": 11.5,
+    "outside_height": 5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Plastic-Storage-Basket-X-Large/dp/B0713Y5XJX?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 14,
+    "outside_width": 11.5,
+    "outside_height": 8.5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Plastic-Storage-Basket-X-Large/dp/B0713Y5XJX?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 14.34,
+    "outside_width": 10.23,
+    "outside_height": 5.7,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/Kiddream-Storage-Plastic-Baskets-Organizing/dp/B0894BVY6M/ref=sr_1_6?keywords=Kiddream&qid=1641848375&refinements=p_n_material_two_browse-bin%3A11618101011&rnid=11618050011&s=storageorganization&sr=1-6"
+  },
+  {
+    "outside_length": 9.75,
+    "outside_width": 7,
+    "outside_height": 4.75,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B0193WUG36?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 12,
+    "outside_width": 8.75,
+    "outside_height": 5.5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B0193WUG36?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 15,
+    "outside_width": 11,
+    "outside_height": 7,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B0193WUG36?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 8.5,
+    "outside_width": 5.5,
+    "outside_height": 3,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/dp/B09FDYJF9X/ref=sspa_dk_detail_1?psc=1&pd_rd_i=B09FDYJF9X&pd_rd_w=IHXtJ&pf_rd_p=887084a2-5c34-4113-a4f8-b7947847c308&pd_rd_wg=v6UA1&pf_rd_r=KEPTN6W37P9DE9ZJ2S3R&pd_rd_r=9f957faa-6fdd-4ae0-9b88-fbcf85cb8d41&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzMzc0TE9LQkhKR0YmZW5jcnlwdGVkSWQ9QTAxNzcwNzAyUk01QVBYS0RUODdEJmVuY3J5cHRlZEFkSWQ9QTAyMjMxMzQxMUlMSVNMMDFLV01UJndpZGdldE5hbWU9c3BfZGV0YWlsJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ=="
+  },
+  {
+    "outside_length": 10,
+    "outside_width": 3,
+    "outside_height": 2.5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/Juvale-12-Pack-Classroom-Pencil-Assorted/dp/B07P5SG4V5/ref=bmx_dp_aefntjbo_3/147-8297390-9627025?pd_rd_w=LOoEJ&pf_rd_p=e6cdd6e6-4670-4642-bb47-67097bcd49dd&pf_rd_r=J15Z9TWB507TAB6MG9MV&pd_rd_r=09b01de3-337d-406f-bcca-d899e4c5c7b4&pd_rd_wg=Vy2JO&pd_rd_i=B07P5SG4V5&psc=1"
+  },
+  {
+    "outside_length": 10.03,
+    "outside_width": 7.79,
+    "outside_height": 4.09,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": 8.66,
+    "inside_width_bottom": 6.4,
+    "link": "https://www.amazon.com/Teyyvn-Plastic-Storage-Basket-10-03/dp/B0746FZL1F/ref=psdc_3744381_t1_B09FDYJF9X"
+  },
+  {
+    "outside_length": 13.8,
+    "outside_width": 10.2,
+    "outside_height": 5.7,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/gp/product/B08NWRCQWK/ref=ask_ql_qh_dp_hza"
+  },
+  {
+    "outside_length": 12.6,
+    "outside_width": 9.5,
+    "outside_height": 3.6,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/Farmoon-Plastic-Storage-Document-Organizer/dp/B08C4Q8KJW/ref=sr_1_10?keywords=Farmoon&qid=1641860741&sr=8-10"
+  },
+  {
+    "outside_length": 10.24,
+    "outside_width": 7.87,
+    "outside_height": 2.76,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/gp/product/B08MZRWRRB/ref=ask_ql_qh_dp_hza"
+  },
+  {
+    "outside_length": 9.84,
+    "outside_width": 7.87,
+    "outside_height": 3.94,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": 8.5,
+    "inside_width_bottom": 6.25,
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B071NMXB1Q?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 7.87,
+    "outside_width": 5.9,
+    "outside_height": 2.36,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B071NMXB1Q?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 13.75,
+    "outside_width": 11.5,
+    "outside_height": 5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B071NMXB1Q?ref_=ast_sto_dp&th=1"
+  },
+  {
+    "outside_length": 14,
+    "outside_width": 11.5,
+    "outside_height": 8.5,
+    "inside_length_top": "",
+    "inside_width_top": "",
+    "inside_height": "",
+    "inside_length_bottom": "",
+    "inside_width_bottom": "",
+    "link": "https://www.amazon.com/BINO-Woven-Plastic-Storage-Basket/dp/B071NMXB1Q?ref_=ast_sto_dp&th=1"
+  }
+];
+const sort_by = (field, reverse, primer) => {
+
+  const key = primer ?
+    function(x) {
+      return primer(x[field]);
+    } :
+    function(x) {
+      return x[field];
+    };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function(a, b) {
+    return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+  };
+};
+
+
+function clearArrow() {
+  let carets = document.getElementsByClassName('caret');
+  for (let caret of carets) {
+    caret.className = "caret";
+  }
+}
+
+
+function toggleArrow(event) {
+  let element = event.target;
+  let caret, field, reverse;
+  if (element.tagName === 'SPAN') {
+    caret = element.getElementsByClassName('caret')[0];
+    field = element.id
+  }
+  else {
+    caret = element;
+    field = element.parentElement.id
+  }
+
+  let iconClassName = caret.className;
+  clearArrow();
+  if (iconClassName.includes(caretUpClassName)) {
+    caret.className = `caret ${caretDownClassName}`;
+    reverse = false;
+  } else {
+    reverse = true;
+    caret.className = `caret ${caretUpClassName}`;
+  }
+
+  tableData.sort(sort_by(field, reverse));
+  populateTable();
+}
+
+
+function populateTable() {
+  table.innerHTML = '';
+  for (let data of tableData) {
+    let row = table.insertRow(-1);
+    let outside_length = row.insertCell(0);
+    outside_length.innerHTML = data.outside_length;
+
+    let outside_width = row.insertCell(1);
+    outside_width.innerHTML = data.outside_width;
+
+    let outside_height = row.insertCell(2);
+    outside_height.innerHTML = data.outside_height;
+
+    let link = row.insertCell(3);
+    let link_HTML = '<a href="'+data.link+'" target="_blank">'+data.link+'</a>';
+    link.innerHTML = link_HTML;
+  }
+
+  filterTable();
+}
+
+
+function filterTable() {
+  let filter = input.value.toUpperCase();
+  rows = table.getElementsByTagName("TR");
+  let flag = false;
+
+  for (let row of rows) {
+    let cells = row.getElementsByTagName("TD");
+    for (let cell of cells) {
+      if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+        if (filter) {
+          cell.style.backgroundColor = 'yellow';
+        } else {
+          cell.style.backgroundColor = '';
+        }
+
+        flag = true;
+      } else {
+        cell.style.backgroundColor = '';
+      }
+    }
+
+    if (flag) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+
+    flag = false;
+  }
+}
+
+
+populateTable();
+
+let tableColumns = document.getElementsByClassName('table-column');
+
+for (let column of tableColumns) {
+  column.addEventListener('click', function(event) {
+    toggleArrow(event);
+  });
+}
+
+input.addEventListener('keyup', function(event) {
+  filterTable();
+});
+</script>
+</body>
+</html>
